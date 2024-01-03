@@ -9,7 +9,13 @@ public class moveRobot : MonoBehaviour
     public Rigidbody rb;
     public float velocity;
 
-
+    //todo
+    // [] adjust motor approximation to not need feedback
+    // [] add controller support
+    // [] create teleop disabled and autonomous code blocks
+    // [] actually simulate swerve drive modules
+    // [] centralize robot controll in this file
+    
 
     // Start is called before the first frame update
     void Start()
@@ -20,14 +26,15 @@ public class moveRobot : MonoBehaviour
 
     public float motorAproximation(float InputVoltage) {
         float gearRatio = 1/13.5f;  //gear ratio 1/12 = 12 to 1 gear ratio(reduction).
+        float wheelRadius = 0.076f; //in meters
         
-        float wheelRpm = (float)Math.Clamp(60 * (Math.Abs(rb.velocity.magnitude)/(2*Math.PI*0.076)),0,380);
-        float motorRPM = wheelRpm/gearRatio;
+        float wheelRpm = (float)Math.Clamp(60 * (Math.Abs(rb.velocity.magnitude)/(2*Math.PI*wheelRadius)),0,380); //determine driven wheel rpm, in this situation think caster wheel in center of bot
+        float motorRPM = wheelRpm/gearRatio; //determine motor shaft rpm
 
-        float torque = (float)((-2.6/6000f * Math.Abs(motorRPM) + 2.6f) * InputVoltage);
-        float adjtorque = (float)((torque*gearRatio)*(4/1.8));
+        float torque = (float)((-2.6/6000f * Math.Abs(motorRPM) + 2.6f) * InputVoltage); //rough torque line for a Neo
+        float adjtorque = (float)((torque*gearRatio)*(4/1.8));//multiply by number of motors divided by efficiency of each extra motor
 
-        return (adjtorque/0.076f);//divide by wheel radius in meters
+        return adjtorque/wheelRadius;//divide by wheel radius in meters
 
         
     }
@@ -35,9 +42,6 @@ public class moveRobot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log((float)Math.Clamp(60 * (Math.Abs(rb.velocity.magnitude)/(2*Math.PI*0.076)),0,380));
-        //Debug.Log(motorAproximation(1));
-        //Debug.Log(Input.GetKey("s"));
         if (Input.GetKey("s"))
         {
             rb.AddRelativeForce(Vector3.left * motorAproximation(1), ForceMode.Acceleration);
@@ -62,11 +66,6 @@ public class moveRobot : MonoBehaviour
         if (Input.GetKey("j"))
         {
             rb.AddRelativeTorque(0,-80,0);
-        }
-
-        if (this.transform.position.y < -1) 
-        {
-            this.transform.position = new Vector3(0, 3, 0);
         }
     }
 }

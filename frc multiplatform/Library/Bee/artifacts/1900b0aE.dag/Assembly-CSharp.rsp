@@ -354,6 +354,7 @@
 -analyzer:"D:/UnityHub/UnityEditor/2022.3.4f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/armSlider.cs"
 "Assets/Scripts/centerOfRotation.cs"
+"Assets/Scripts/HingeMovement.cs"
 "Assets/Scripts/Intake.cs"
 "Assets/Scripts/moveRobot.cs"
 -langversion:9.0
