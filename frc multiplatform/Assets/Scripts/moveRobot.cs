@@ -81,8 +81,8 @@ public class moveRobot : MonoBehaviour
         intake.AxisVector = new Vector3(1,0,0);
         
         if(Input.GetKey("r")){
-            arm.TargetAngle = 2;
-            intake.TargetAngle = -80;
+            arm.TargetAngle = -5;
+            intake.TargetAngle = -60;
         }
     }
 }
