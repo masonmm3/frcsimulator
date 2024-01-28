@@ -66,11 +66,11 @@ public class moveRobot : MonoBehaviour
             rb.AddRelativeForce(Vector3.forward * motorAproximation(1), ForceMode.Acceleration);
         }
 
-        if (Input.GetKey("l"))
+        if (Input.GetKey("e"))
         {
             rb.AddRelativeTorque(0,80,0);
         }
-        if (Input.GetKey("j"))
+        if (Input.GetKey("q"))
         {
             rb.AddRelativeTorque(0,-80,0);
         }
@@ -82,7 +82,7 @@ public class moveRobot : MonoBehaviour
         
         if(Input.GetKey("r")){
             arm.TargetAngle = -5;
-            intake.TargetAngle = -60;
+            intake.TargetAngle = -58;
         }
     }
 }
