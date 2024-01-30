@@ -10,6 +10,8 @@ public class moveRobot : MonoBehaviour
     public float velocity;
     public HingeMovement arm = new HingeMovement();
     public HingeMovement intake = new HingeMovement();
+    public SlideJoint armsec1 = new SlideJoint();
+    public SlideJoint armsec2 = new SlideJoint();
 
     //todo
     // [] adjust motor approximation to not need feedback
@@ -83,6 +85,15 @@ public class moveRobot : MonoBehaviour
         if(Input.GetKey("r")){
             arm.TargetAngle = -5;
             intake.TargetAngle = -58;
+            armsec2.targetDistance = 0.1f;
+            armsec1.targetDistance = 0.0f;
+        }
+
+        if(Input.GetKey("f")) {
+            arm.TargetAngle = 0;
+            intake.TargetAngle = 0;
+            armsec2.targetDistance = 0.0f;
+            armsec1.targetDistance = 0.0f;
         }
     }
 }

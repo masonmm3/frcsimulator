@@ -357,6 +357,7 @@
 "Assets/Scripts/HingeMovement.cs"
 "Assets/Scripts/Intake.cs"
 "Assets/Scripts/moveRobot.cs"
+"Assets/Scripts/SlideJoint.cs"
 -langversion:9.0
 
 /deterministic

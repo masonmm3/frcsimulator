@@ -833,6 +833,8 @@ MonoBehaviour:
   velocity: 75
   arm: {fileID: 919132147536070312}
   intake: {fileID: 8485173161419726223}
+  armsec1: {fileID: 8567716999385099415}
+  armsec2: {fileID: 8009987136263391551}
 --- !u!65 &2030971087
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2176,6 +2178,7 @@ GameObject:
   - component: {fileID: 8567716999385099412}
   - component: {fileID: 8567716999385099414}
   - component: {fileID: 8567716999385099413}
+  - component: {fileID: 8567716999385099415}
   m_Layer: 0
   m_Name: Cube.010
   m_TagString: Untagged
@@ -2515,8 +2518,8 @@ ConfigurableJoint:
     useAcceleration: 0
   m_AngularYZDrive:
     serializedVersion: 4
-    positionSpring: 1e+10
-    positionDamper: 0
+    positionSpring: 100000
+    positionDamper: 10
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_SlerpDrive:
@@ -5697,6 +5700,7 @@ GameObject:
   - component: {fileID: 4321514657823182707}
   - component: {fileID: 8009987136263391550}
   - component: {fileID: 8009987136263391549}
+  - component: {fileID: 8009987136263391551}
   m_Layer: 0
   m_Name: Cube.011
   m_TagString: Untagged
@@ -5754,7 +5758,7 @@ ConfigurableJoint:
     limit: 0
     bounciness: 0
     contactDistance: 0
-  m_TargetPosition: {x: 0.1, y: 0, z: 0}
+  m_TargetPosition: {x: 0, y: 0, z: 0}
   m_TargetVelocity: {x: 0, y: 0, z: 0}
   m_XDrive:
     serializedVersion: 4
@@ -5833,6 +5837,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8009987136263391551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8009987136263391548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09fda2cdda9b634408fd758e87f0bd55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CJ: {fileID: 8009987136263391549}
+  targetDistance: 0
+  AxisVector: {x: 1, y: 0, z: 0}
 --- !u!23 &8089062574951709381
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6550,7 +6569,7 @@ ConfigurableJoint:
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
-  m_XMotion: 0
+  m_XMotion: 1
   m_YMotion: 0
   m_ZMotion: 0
   m_AngularXMotion: 0
@@ -6589,10 +6608,10 @@ ConfigurableJoint:
   m_TargetVelocity: {x: 0, y: 0, z: 0}
   m_XDrive:
     serializedVersion: 4
-    positionSpring: 3.402823e+38
-    positionDamper: 3.402823e+38
+    positionSpring: 100000
+    positionDamper: 100
     maximumForce: 3.4028233e+38
-    useAcceleration: 1
+    useAcceleration: 0
   m_YDrive:
     serializedVersion: 4
     positionSpring: 0
@@ -6664,6 +6683,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8567716999385099415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2459513671555691282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09fda2cdda9b634408fd758e87f0bd55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CJ: {fileID: 8567716999385099413}
+  targetDistance: 0
+  AxisVector: {x: 1, y: 0, z: 0}
 --- !u!1 &8583529960287276577
 GameObject:
   m_ObjectHideFlags: 0
