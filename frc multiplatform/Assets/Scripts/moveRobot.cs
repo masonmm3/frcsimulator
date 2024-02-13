@@ -83,8 +83,8 @@ public class moveRobot : MonoBehaviour
         intake.AxisVector = new Vector3(1,0,0);
         
         if(Input.GetKey("r")){
-            arm.TargetAngle = -5;
-            intake.TargetAngle = -58;
+            arm.TargetAngle = 0;
+            intake.TargetAngle = -90;
             armsec2.targetDistance = 0.1f;
             armsec1.targetDistance = 0.0f;
         }
@@ -93,6 +93,13 @@ public class moveRobot : MonoBehaviour
             arm.TargetAngle = 0;
             intake.TargetAngle = 0;
             armsec2.targetDistance = 0.0f;
+            armsec1.targetDistance = 0.0f;
+        }
+
+        if(Input.GetKey("c")){
+            arm.TargetAngle = 175;
+            intake.TargetAngle = -0;
+            armsec2.targetDistance = 0.3f;
             armsec1.targetDistance = 0.0f;
         }
     }
