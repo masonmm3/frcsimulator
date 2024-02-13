@@ -42,8 +42,10 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\centerOfRotation.cs" />
      <Compile Include="Assets\Scripts\SlideJoint.cs" />
+     <Compile Include="Assets\Scripts\IntakeWheels1.cs" />
      <Compile Include="Assets\Scripts\armSlider.cs" />
      <Compile Include="Assets\Scripts\HingeMovement.cs" />
+     <Compile Include="Assets\Scripts\IntakeWheels.cs" />
      <Compile Include="Assets\Scripts\Intake.cs" />
      <Compile Include="Assets\Scripts\moveRobot.cs" />
     <Reference Include="UnityEngine">
