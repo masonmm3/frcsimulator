@@ -117,10 +117,17 @@ public class moveRobot : MonoBehaviour
             armsec1.targetDistance = 0.2f;
         }
 
+        if(Input.GetKey("2")){
+            arm.TargetAngle = 120;
+            intake.TargetAngle = -30;
+            armsec2.targetDistance = 0.4f;
+            armsec1.targetDistance = 0.24f;
+        }
+
         if(Input.GetKey("1")){
-            topCube.speed = 1000;
+            topCube.speed = 4000;
             bottomCube.speed = -1000;
-            cone.speed = 100;
+            cone.speed = 2500;
         }
     }
 }
