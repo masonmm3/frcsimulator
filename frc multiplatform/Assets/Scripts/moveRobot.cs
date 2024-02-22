@@ -12,9 +12,9 @@ public class moveRobot : MonoBehaviour
     public HingeMovement intake = new HingeMovement();
     public SlideJoint armsec1 = new SlideJoint();
     public SlideJoint armsec2 = new SlideJoint();
-    public IntakeWheels topCube = new IntakeWheels();
-    public Intake1 bottomCube = new Intake1();
-    public Intake1 cone = new Intake1();
+    public IntakeWheels coneIntake = new IntakeWheels();
+    public IntakeWheels topIntake = new IntakeWheels();
+    public IntakeWheels bottomeIntake = new IntakeWheels();
 
     //todo
     // [] adjust motor approximation to not need feedback
@@ -29,9 +29,6 @@ public class moveRobot : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
        
-        topCube.axisVector = new Vector3(0,0,0);
-        bottomCube.axisVector = new Vector3(0,0,1);
-        cone.axisVector = new Vector3(0,1,0);
         //velocity = velocity * 10;
     }
 
@@ -93,10 +90,6 @@ public class moveRobot : MonoBehaviour
             intake.TargetAngle = -90;
             armsec2.targetDistance = 0.1f;
             armsec1.targetDistance = 0.0f;
-
-            topCube.speed = -4000;
-            bottomCube.speed = 1000;
-            cone.speed = -2000;
         }
 
         if(Input.GetKey("f")) {
@@ -104,30 +97,25 @@ public class moveRobot : MonoBehaviour
             intake.TargetAngle = 0;
             armsec2.targetDistance = 0.0f;
             armsec1.targetDistance = 0.0f;
-
-            topCube.speed = -50;
-            bottomCube.speed = 0;
-            cone.speed = 0;
         }
 
         if(Input.GetKey("c")){
             arm.TargetAngle = 120;
-            intake.TargetAngle = -0;
+            intake.TargetAngle = -20;
             armsec2.targetDistance = 0.4f;
-            armsec1.targetDistance = 0.2f;
-        }
-
-        if(Input.GetKey("2")){
-            arm.TargetAngle = 120;
-            intake.TargetAngle = -30;
-            armsec2.targetDistance = 0.4f;
-            armsec1.targetDistance = 0.24f;
+            armsec1.targetDistance = 0.26f;
         }
 
         if(Input.GetKey("1")){
-            topCube.speed = 4000;
-            bottomCube.speed = -1000;
-            cone.speed = 2500;
+            coneIntake.speed = 3000;
+            topIntake.speed = 3000;
+            bottomeIntake.speed = -8000;
+        }
+
+        if (Input.GetKey("2")) {
+            coneIntake.speed = 3000;
+            topIntake.speed = -3000;
+            bottomeIntake.speed = 3000;
         }
     }
 }

@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Intake1 : MonoBehaviour
+public class IntakeWheels : MonoBehaviour
 {
-    public ConfigurableJoint cj;
-    public Vector3 axisVector;
+    public HingeJoint hj;
     public int speed;
     // Start is called before the first frame update
     void Start()
@@ -16,7 +15,8 @@ public class Intake1 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 target = axisVector * speed;
-        cj.targetAngularVelocity = target;
+        JointMotor intake = hj.motor;
+        intake.targetVelocity = speed;
+        hj.motor = intake;
     }
 }
