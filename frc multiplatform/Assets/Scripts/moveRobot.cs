@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,6 +16,7 @@ public class moveRobot : MonoBehaviour
     public IntakeWheels coneIntake = new IntakeWheels();
     public IntakeWheels topIntake = new IntakeWheels();
     public IntakeWheels bottomeIntake = new IntakeWheels();
+    private float  gearRatio = 1/8.6f;  //gear ratio 1/13.5 = 13.5 to 1 gear ratio(reduction).
 
     //todo
     // [] adjust motor approximation to not need feedback
@@ -34,13 +36,12 @@ public class moveRobot : MonoBehaviour
 
     public float motorAproximation(float InputVoltage) {
         
-        float gearRatio = 1/13.5f;  //gear ratio 1/12 = 12 to 1 gear ratio(reduction).
-        float wheelRadius = 0.076f; //in meters
+        float wheelRadius = 0.0508f; //in meters
         
         float wheelRpm = (float)Math.Clamp(60 * (Math.Abs(rb.velocity.magnitude)/(2*Math.PI*wheelRadius)),0,380); //determine driven wheel rpm, in this situation think caster wheel in center of bot
         float motorRPM = wheelRpm/gearRatio; //determine motor shaft rpm
 
-        float torque = (float)((-2.6/6000f * Math.Abs(motorRPM) + 2.6f) * InputVoltage); //rough torque line for a Neo
+        float torque = (float)((-2.6/6000f * Math.Abs(motorRPM) + 2.6f) * Math.Clamp(InputVoltage,-1,1)); //rough torque line for a Neo
         float adjtorque = (float)((torque*gearRatio)*(4/1.8));//multiply by number of motors divided by efficiency of each extra motor
 
         return adjtorque/wheelRadius;//divide by wheel radius in meters
@@ -52,8 +53,9 @@ public class moveRobot : MonoBehaviour
     void Update()
     {
 
-        //Drive Train stuff
-
+        //Drive Train stuff\
+        
+        rb.maxLinearVelocity = (float)((0.0508 * ((2* Math.PI * (5676 * gearRatio))/60)));//determine max linear speed using the the tip speed of the drive wheels when running at full speed, 5676 is neo 1.1 emperical free speed
         if (Input.GetKey("s"))
         {
             rb.AddRelativeForce(Vector3.left * motorAproximation(1), ForceMode.Acceleration);
@@ -70,14 +72,13 @@ public class moveRobot : MonoBehaviour
         {
             rb.AddRelativeForce(Vector3.forward * motorAproximation(1), ForceMode.Acceleration);
         }
-
         if (Input.GetKey("e"))
         {
-            rb.AddRelativeTorque(0,80,0);
+            rb.AddRelativeTorque(0,40,0);
         }
         if (Input.GetKey("q"))
         {
-            rb.AddRelativeTorque(0,-80,0);
+            rb.AddRelativeTorque(0,-40,0);
         }
 
     //Arm Stuff
@@ -87,7 +88,7 @@ public class moveRobot : MonoBehaviour
         
         if(Input.GetKey("r")){
             arm.TargetAngle = 0;
-            intake.TargetAngle = -90;
+            intake.TargetAngle = -102;
             armsec2.targetDistance = 0.1f;
             armsec1.targetDistance = 0.0f;
         }
@@ -101,21 +102,21 @@ public class moveRobot : MonoBehaviour
 
         if(Input.GetKey("c")){
             arm.TargetAngle = 120;
-            intake.TargetAngle = -20;
+            intake.TargetAngle = -15;
             armsec2.targetDistance = 0.4f;
-            armsec1.targetDistance = 0.26f;
+            armsec1.targetDistance = 0.28f;
         }
 
         if(Input.GetKey("1")){
-            coneIntake.speed = 3000;
+            coneIntake.speed = 0;
             topIntake.speed = 3000;
-            bottomeIntake.speed = -8000;
+            bottomeIntake.speed = -3000;
         }
 
         if (Input.GetKey("2")) {
-            coneIntake.speed = 3000;
-            topIntake.speed = -3000;
-            bottomeIntake.speed = 3000;
+            coneIntake.speed = 4000;
+            topIntake.speed = -4000;
+            bottomeIntake.speed = 4000;
         }
     }
 }

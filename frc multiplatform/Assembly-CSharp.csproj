@@ -47,6 +47,7 @@
      <Compile Include="Assets\Scripts\IntakeWheels.cs" />
      <Compile Include="Assets\Scripts\Intake.cs" />
      <Compile Include="Assets\Scripts\moveRobot.cs" />
+     <Compile Include="Assets\Scripts\NormalizeMass.cs" />
     <Reference Include="UnityEngine">
         <HintPath>D:\UnityHub\UnityEditor\2022.3.4f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

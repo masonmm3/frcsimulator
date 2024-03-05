@@ -358,6 +358,7 @@
 "Assets/Scripts/Intake.cs"
 "Assets/Scripts/IntakeWheels.cs"
 "Assets/Scripts/moveRobot.cs"
+"Assets/Scripts/NormalizeMass.cs"
 "Assets/Scripts/SlideJoint.cs"
 -langversion:9.0
 
