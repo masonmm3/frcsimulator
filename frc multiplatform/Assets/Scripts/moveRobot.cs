@@ -16,7 +16,7 @@ public class moveRobot : MonoBehaviour
     public IntakeWheels coneIntake = new IntakeWheels();
     public IntakeWheels topIntake = new IntakeWheels();
     public IntakeWheels bottomeIntake = new IntakeWheels();
-    private float  gearRatio = 1/8.6f;  //gear ratio 1/13.5 = 13.5 to 1 gear ratio(reduction).
+    private float  gearRatio = 1/10f;  //gear ratio 1/13.5 = 13.5 to 1 gear ratio(reduction).
 
     //todo
     // [] adjust motor approximation to not need feedback
@@ -102,20 +102,20 @@ public class moveRobot : MonoBehaviour
 
         if(Input.GetKey("c")){
             arm.TargetAngle = 120;
-            intake.TargetAngle = -15;
+            intake.TargetAngle = -10;
             armsec2.targetDistance = 0.4f;
             armsec1.targetDistance = 0.28f;
         }
 
         if(Input.GetKey("1")){
-            coneIntake.speed = 0;
+            coneIntake.speed = -200;
             topIntake.speed = 3000;
             bottomeIntake.speed = -3000;
         }
 
         if (Input.GetKey("2")) {
-            coneIntake.speed = 4000;
-            topIntake.speed = -4000;
+            coneIntake.speed = 2500;
+            topIntake.speed = -2500;
             bottomeIntake.speed = 4000;
         }
     }
