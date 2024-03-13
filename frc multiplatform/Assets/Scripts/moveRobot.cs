@@ -104,11 +104,11 @@ public class moveRobot : MonoBehaviour
             arm.TargetAngle = 120;
             intake.TargetAngle = -10;
             armsec2.targetDistance = 0.4f;
-            armsec1.targetDistance = 0.28f;
+            armsec1.targetDistance = 0.3f;
         }
 
         if(Input.GetKey("1")){
-            coneIntake.speed = -200;
+            coneIntake.speed = -3000;
             topIntake.speed = 3000;
             bottomeIntake.speed = -3000;
         }
@@ -116,7 +116,7 @@ public class moveRobot : MonoBehaviour
         if (Input.GetKey("2")) {
             coneIntake.speed = 2500;
             topIntake.speed = -2500;
-            bottomeIntake.speed = 4000;
+            bottomeIntake.speed = 2500;
         }
     }
 }
