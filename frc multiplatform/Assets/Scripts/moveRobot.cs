@@ -74,23 +74,25 @@ public class moveRobot : MonoBehaviour
         }
         if (Input.GetKey("e"))
         {
-            rb.AddRelativeTorque(0,40,0);
+            rb.AddRelativeTorque(0,60,0);
         }
         if (Input.GetKey("q"))
         {
-            rb.AddRelativeTorque(0,-40,0);
+            rb.AddRelativeTorque(0,-60,0);
         }
 
     //Arm Stuff
 
         arm.AxisVector = new Vector3(0,0,1);
-        intake.AxisVector = new Vector3(1,0,0);
+        intake.AxisVector = new Vector3(0,0,1);
+        armsec1.AxisVector = new Vector3(1,0,0);
+        armsec2.AxisVector = new Vector3(0,1,0);
         
         if(Input.GetKey("r")){
             arm.TargetAngle = 0;
-            intake.TargetAngle = -102;
-            armsec2.targetDistance = 0.1f;
-            armsec1.targetDistance = 0.0f;
+            intake.TargetAngle = 102;
+            armsec2.targetDistance = -0.1f;
+            armsec1.targetDistance = -0.0f;
         }
 
         if(Input.GetKey("f")) {
@@ -101,22 +103,22 @@ public class moveRobot : MonoBehaviour
         }
 
         if(Input.GetKey("c")){
-            arm.TargetAngle = 120;
-            intake.TargetAngle = -10;
-            armsec2.targetDistance = 0.4f;
-            armsec1.targetDistance = 0.3f;
+            arm.TargetAngle = -110;
+            intake.TargetAngle = 0;
+            armsec2.targetDistance = -0.4f;
+            armsec1.targetDistance = -0.165f;
         }
 
         if(Input.GetKey("1")){
-            coneIntake.speed = -3000;
-            topIntake.speed = 3000;
-            bottomeIntake.speed = -3000;
+            coneIntake.speed = 3000;
+            topIntake.speed = -3000;
+            bottomeIntake.speed = 3000;
         }
 
         if (Input.GetKey("2")) {
-            coneIntake.speed = 2500;
-            topIntake.speed = -2500;
-            bottomeIntake.speed = 2500;
+            coneIntake.speed = -3000;
+            topIntake.speed = 3000;
+            bottomeIntake.speed = -2500;
         }
     }
 }
