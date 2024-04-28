@@ -16,7 +16,7 @@ public class moveRobot : MonoBehaviour
     public IntakeWheels coneIntake = new IntakeWheels();
     public IntakeWheels topIntake = new IntakeWheels();
     public IntakeWheels bottomeIntake = new IntakeWheels();
-    private float  gearRatio = 1/10f;  //gear ratio 1/13.5 = 13.5 to 1 gear ratio(reduction).
+    private float  gearRatio = 1/9.6f;  //gear ratio 1/13.5 = 13.5 to 1 gear ratio(reduction).
 
     //todo
     // [] adjust motor approximation to not need feedback
@@ -42,7 +42,7 @@ public class moveRobot : MonoBehaviour
         float motorRPM = wheelRpm/gearRatio; //determine motor shaft rpm
 
         float torque = (float)((-2.6/6000f * Math.Abs(motorRPM) + 2.6f) * Math.Clamp(InputVoltage,-1,1)); //rough torque line for a Neo
-        float adjtorque = (float)((torque*gearRatio)*(4/1.8));//multiply by number of motors divided by efficiency of each extra motor
+        float adjtorque = (float)((torque*gearRatio)*(4/2.3));//multiply by number of motors divided by efficiency of each extra motor
 
         return adjtorque/wheelRadius;//divide by wheel radius in meters
 
@@ -91,7 +91,7 @@ public class moveRobot : MonoBehaviour
         if(Input.GetKey("r")){
             arm.TargetAngle = 0;
             intake.TargetAngle = 102;
-            armsec2.targetDistance = -0.1f;
+            armsec2.targetDistance = -0.12f;
             armsec1.targetDistance = -0.0f;
         }
 
@@ -103,22 +103,37 @@ public class moveRobot : MonoBehaviour
         }
 
         if(Input.GetKey("c")){
-            arm.TargetAngle = -110;
-            intake.TargetAngle = 0;
+            arm.TargetAngle = -108f;
+            intake.TargetAngle = -2;
             armsec2.targetDistance = -0.4f;
-            armsec1.targetDistance = -0.165f;
+            armsec1.targetDistance = -0.16f;
         }
 
+        if(Input.GetKey("x")){
+            arm.TargetAngle = -145;
+            intake.TargetAngle = 25;
+            armsec2.targetDistance = -0.4f;
+            armsec1.targetDistance = -0.4f;
+        }
+
+        if(Input.GetKey("3")){
+            arm.TargetAngle = -138;
+            intake.TargetAngle = 10;
+            armsec2.targetDistance = -0.0f;
+            armsec1.targetDistance = -0.4f;
+        }
+
+
         if(Input.GetKey("1")){
-            coneIntake.speed = 3000;
-            topIntake.speed = -3000;
-            bottomeIntake.speed = 3000;
+            coneIntake.speed = 4000;
+            topIntake.speed = -4000;
+            bottomeIntake.speed = 4000;
         }
 
         if (Input.GetKey("2")) {
-            coneIntake.speed = -3000;
-            topIntake.speed = 3000;
-            bottomeIntake.speed = -2500;
+            coneIntake.speed = -4000;
+            topIntake.speed = 4000;
+            bottomeIntake.speed = -4000;
         }
     }
 }
