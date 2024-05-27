@@ -34,6 +34,24 @@ public class moveRobot : MonoBehaviour
         //velocity = velocity * 10;
     }
 
+    public float motorAproximationV2(float InputVoltage) {
+        float wheelRadius = 0.0508f; //in meters
+        float RPM;
+        float KV = 473;
+        float load = 0;
+
+        load += InputVoltage * KV/100;
+
+        RPM = (InputVoltage * KV) / Math.Max(load, 4000);
+
+        float wheelRpm = RPM * gearRatio;
+        
+        float torque = (float)-2.6/6000f * Math.Abs(RPM) + 2.6f; //rough torque line for a Neo
+        float adjtorque = (float)((torque*gearRatio)*(4/2.3));//multiply by number of motors divided by efficiency of each extra motor
+
+        return adjtorque/wheelRadius;//divide by wheel radius in meters
+    }
+
     public float motorAproximation(float InputVoltage) {
         
         float wheelRadius = 0.0508f; //in meters
