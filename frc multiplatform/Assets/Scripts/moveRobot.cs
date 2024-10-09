@@ -1,22 +1,45 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class moveRobot : MonoBehaviour
 {
     public Rigidbody rb;
     public float velocity;
-    public HingeMovement arm = new HingeMovement();
-    public HingeMovement intake = new HingeMovement();
-    public SlideJoint armsec1 = new SlideJoint();
-    public SlideJoint armsec2 = new SlideJoint();
-    public IntakeWheels coneIntake = new IntakeWheels();
-    public IntakeWheels topIntake = new IntakeWheels();
-    public IntakeWheels bottomeIntake = new IntakeWheels();
-    private float  gearRatio = 1/9.6f;  //gear ratio 1/13.5 = 13.5 to 1 gear ratio(reduction).
+    public HingeMovement arm;
+    public HingeMovement intake;
+    public SlideJoint armsec1;
+    public SlideJoint armsec2;
+    public IntakeWheels coneIntake;
+    public IntakeWheels topIntake;
+    public IntakeWheels bottomeIntake;
+    public SwerveWheel[] swerveWheels;
+    private float gearRatio = 1 /8.6f;
+
+    private Vector2 translateValue;
+    private Vector2 rotateValue;
+    private Vector3 driveInput;
+
+    private bool onLow;
+    private bool onMid;
+    private bool onHigh;
+    private bool onStation;
+
+    private bool Low;
+    private bool Mid;
+    private bool High;
+    private bool Station;
+    private bool debounce;
+
+    private bool onIntake;
+    private bool onOutake;
+
+    private float extendTarget;
 
     //todo
     // [] adjust motor approximation to not need feedback
@@ -24,134 +47,233 @@ public class moveRobot : MonoBehaviour
     // [] create teleop disabled and autonomous code blocks
     // [] actually simulate swerve drive modules
     // [in progress] centralize robot controll in this file
-    
+
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
        
+
+        Low = false;
+        Mid = false;
+        High = false;
+        Station = false;
+
         //velocity = velocity * 10;
     }
 
-    public float motorAproximationV2(float InputVoltage) {
-        float wheelRadius = 0.0508f; //in meters
-        float RPM;
-        float KV = 473;
-        float load = 0;
+    public void SwerveSetpoints()
+    {
+        driveInput = new Vector3(translateValue.y, 0, translateValue.x);
 
-        load += InputVoltage * KV/100;
+        Vector3 rotatedVector = Quaternion.AngleAxis(-90, Vector3.up) * driveInput;
 
-        RPM = (InputVoltage * KV) / Math.Max(load, 4000);
+        float FWD, STR;
 
-        float wheelRpm = RPM * gearRatio;
-        
-        float torque = (float)-2.6/6000f * Math.Abs(RPM) + 2.6f; //rough torque line for a Neo
-        float adjtorque = (float)((torque*gearRatio)*(4/2.3));//multiply by number of motors divided by efficiency of each extra motor
+        FWD = rotatedVector.x;
 
-        return adjtorque/wheelRadius;//divide by wheel radius in meters
-    }
+        STR = rotatedVector.z;
 
-    public float motorAproximation(float InputVoltage) {
-        
-        float wheelRadius = 0.0508f; //in meters
-        
-        float wheelRpm = (float)Math.Clamp(60 * (Math.Abs(rb.velocity.magnitude)/(2*Math.PI*wheelRadius)),0,380); //determine driven wheel rpm, in this situation think caster wheel in center of bot
-        float motorRPM = wheelRpm/gearRatio; //determine motor shaft rpm
+        float RCW = -rotateValue.x;
 
-        float torque = (float)((-2.6/6000f * Math.Abs(motorRPM) + 2.6f) * Math.Clamp(InputVoltage,-1,1)); //rough torque line for a Neo
-        float adjtorque = (float)((torque*gearRatio)*(4/2.3));//multiply by number of motors divided by efficiency of each extra motor
+        float L = swerveWheels[1].Position.x + swerveWheels[2].Position.x;
 
-        return adjtorque/wheelRadius;//divide by wheel radius in meters
+        float W = swerveWheels[0].Position.z + swerveWheels[1].Position.z;
 
-        
+        float R = Mathf.Sqrt(MathF.Pow(L, 2) + Mathf.Pow(W, 2));
+
+        float A = STR - RCW * (L / R);
+        float B = STR + RCW * (L / R);
+        float C = FWD - RCW * (W / R);
+        float D = FWD + RCW * (W / R);
+
+        float ws1 = Mathf.Sqrt(Mathf.Pow(B, 2) + Mathf.Pow(C, 2));
+        float wa1 = Mathf.Atan2(B, C) * 180 / Mathf.PI;
+
+        float ws2 = Mathf.Sqrt(Mathf.Pow(B, 2) + Mathf.Pow(D, 2));
+        float wa2 = Mathf.Atan2(B, D) * 180 / Mathf.PI;
+
+        float ws3 = Mathf.Sqrt(Mathf.Pow(A, 2) + Mathf.Pow(D, 2));
+        float wa3 = Mathf.Atan2(A, D) * 180 / Mathf.PI;
+
+        float ws4 = Mathf.Sqrt(Mathf.Pow(A, 2) + Mathf.Pow(C, 2));
+        float wa4 = Mathf.Atan2(A, C) * 180 / Mathf.PI;
+
+        swerveWheels[0].WA = wa1;
+        swerveWheels[1].WA = wa2;
+        swerveWheels[3].WA = wa3;
+        swerveWheels[2].WA = wa4;
+
+        swerveWheels[0].WS = ws1 * velocity;
+        swerveWheels[1].WS = ws2 * velocity;
+        swerveWheels[3].WS = ws3 * velocity;
+        swerveWheels[2].WS = ws4 * velocity;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        //Drive Train stuff\
         
-        rb.maxLinearVelocity = (float)((0.0508 * ((2* Math.PI * (5676 * gearRatio))/60)));//determine max linear speed using the the tip speed of the drive wheels when running at full speed, 5676 is neo 1.1 emperical free speed
-        if (Input.GetKey("s"))
-        {
-            rb.AddRelativeForce(Vector3.left * motorAproximation(1), ForceMode.Acceleration);
-        }
-        if (Input.GetKey("w"))
-        {
-            rb.AddRelativeForce(Vector3.right * motorAproximation(1), ForceMode.Acceleration);
-        }
-        if (Input.GetKey("d"))
-        {
-            rb.AddRelativeForce(Vector3.back * motorAproximation(1), ForceMode.Acceleration);
-        }
-        if (Input.GetKey("a"))
-        {
-            rb.AddRelativeForce(Vector3.forward * motorAproximation(1), ForceMode.Acceleration);
-        }
-        if (Input.GetKey("e"))
-        {
-            rb.AddRelativeTorque(0,60,0);
-        }
-        if (Input.GetKey("q"))
-        {
-            rb.AddRelativeTorque(0,-60,0);
-        }
 
+       
     //Arm Stuff
 
         arm.AxisVector = new Vector3(0,0,1);
         intake.AxisVector = new Vector3(0,0,1);
         armsec1.AxisVector = new Vector3(1,0,0);
         armsec2.AxisVector = new Vector3(0,1,0);
-        
-        if(Input.GetKey("r")){
-            arm.TargetAngle = 0;
-            intake.TargetAngle = 102;
-            armsec2.targetDistance = -0.12f;
-            armsec1.targetDistance = -0.0f;
+
+        if (onLow && !debounce)
+        {
+            Low = !Low;
+            Mid = false;
+            High = false;
+            Station = false;
         }
 
-        if(Input.GetKey("f")) {
+        if (onMid && !debounce)
+        {
+            Mid = !Mid;
+            Low = false;
+            High = false;
+            Station = false;
+        }
+
+        if (onHigh && !debounce)
+        {
+            High = !High;
+            Mid = false;
+            Low = false;
+            Station = false;
+        }
+
+        if (onStation && !debounce)
+        {
+            Station = !Station;
+            Mid = false;
+            High = false;
+            Low = false;
+        }
+
+        if (onLow || onMid | onHigh || onStation)
+        {
+            debounce = true;
+        } else
+        {
+            debounce = false;
+        }
+
+        if (Low)
+        {
+            arm.TargetAngle = 0;
+            intake.TargetAngle = 108;
+            extendTarget = 0.12f;
+        }
+        else if (Mid)
+        {
+            arm.TargetAngle = -140;
+            intake.TargetAngle = 10;
+            extendTarget = 0.53f;
+        }
+        else if (High) 
+        {
+            arm.TargetAngle = -140;
+            intake.TargetAngle = 24.5f;
+            extendTarget = 0.99f;
+        } else if (Station)
+        {
+            arm.TargetAngle = -108f;
+            intake.TargetAngle = -5;
+            extendTarget = 0.56f;
+        } else
+        {
             arm.TargetAngle = 0;
             intake.TargetAngle = 0;
-            armsec2.targetDistance = 0.0f;
-            armsec1.targetDistance = 0.0f;
+            extendTarget = 0;
+        }
+        if (extendTarget > 0 && arm.TargetAngle != 0)
+        {
+            extendTarget = extendTarget * Mathf.Abs(arm.gameObject.transform.localRotation.eulerAngles.z / arm.TargetAngle);
         }
 
-        if(Input.GetKey("c")){
-            arm.TargetAngle = -108f;
-            intake.TargetAngle = -2;
-            armsec2.targetDistance = -0.4f;
-            armsec1.targetDistance = -0.16f;
-        }
-
-        if(Input.GetKey("x")){
-            arm.TargetAngle = -145;
-            intake.TargetAngle = 25;
-            armsec2.targetDistance = -0.4f;
-            armsec1.targetDistance = -0.4f;
-        }
-
-        if(Input.GetKey("3")){
-            arm.TargetAngle = -138;
-            intake.TargetAngle = 10;
-            armsec2.targetDistance = -0.0f;
-            armsec1.targetDistance = -0.4f;
-        }
+        armsec1.targetDistance = -extendTarget / 2;
+        armsec2.targetDistance = -extendTarget / 2; 
 
 
-        if(Input.GetKey("1")){
+        if(onIntake){
             coneIntake.speed = 4000;
             topIntake.speed = -4000;
             bottomeIntake.speed = 4000;
         }
 
-        if (Input.GetKey("2")) {
+        if (onOutake) {
             coneIntake.speed = -4000;
             topIntake.speed = 4000;
             bottomeIntake.speed = -4000;
         }
+
+
+        
+
+        //Drive Train Stuff
+
+        float L = swerveWheels[1].Position.x + swerveWheels[2].Position.x;
+
+        float W = swerveWheels[0].Position.z + swerveWheels[1].Position.z;
+
+        float R = Mathf.Sqrt(MathF.Pow(L, 2) + Mathf.Pow(W, 2));
+
+        SwerveSetpoints();
+
+        rb.maxLinearVelocity = (0.0508f * ((2 * Mathf.PI * (5676 * gearRatio)) / 60));//determine max linear speed using the the tip speed of the drive wheels when running at full speed, 5676 is neo 1.1 emperical free speed
+        rb.maxAngularVelocity = 2 * Mathf.PI * R * (0.0508f * ((2 * Mathf.PI * (5676 * gearRatio)) / 60)); ;
+
     }
+
+
+
+    public void OnTranslate(InputAction.CallbackContext obj)
+    {
+        translateValue = obj.ReadValue<Vector2>();
+    }
+
+    public void OnRotate(InputAction.CallbackContext obj)
+    {
+        rotateValue = obj.ReadValue<Vector2>();
+    }
+
+    public void OnLow(InputAction.CallbackContext obj)
+    {
+        onLow = obj.action.triggered;
+    }
+
+    public void OnMid(InputAction.CallbackContext obj)
+    {
+        onMid = obj.action.triggered;
+    }
+
+    public void OnHigh(InputAction.CallbackContext obj)
+    {
+        onHigh = obj.action.triggered;
+    }
+
+    public void OnStation(InputAction.CallbackContext obj)
+    {
+        onStation = obj.action.triggered;
+    }
+
+    public void OnOutake(InputAction.CallbackContext obj)
+    {
+        onOutake = obj.action.triggered;
+    }
+
+    public void OnIntake(InputAction.CallbackContext obj)
+    {
+        onIntake = obj.action.triggered;
+    }
+
+
+
+
 }
